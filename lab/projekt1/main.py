@@ -28,12 +28,6 @@ subsequences_x = sub_lists(keys)
 array_polynomial = return_polynomials(subsequences_x, x_y)
 polynomials = [i[0] for i in array_polynomial]
 
-estimations = [polynomial(22) for polynomial in polynomials]
-
-closest = 0
-
-minimal_difference = min(estimations, key=lambda x: np.abs(constant - x))
-
 best_result = min(array_polynomial,key=lambda x: np.abs(constant - x[0](22)))
 best_subsequence = best_result[1]
 best_subsequence_polynomial = best_result[0]
