@@ -32,4 +32,5 @@ best_result = min(array_polynomial,key=lambda x: np.abs(constant - x[0](22)))
 best_subsequence = best_result[1]
 best_subsequence_polynomial = best_result[0]
 
-print(f"Najlepiej estymująca grupa węzłów : \n\n{best_subsequence}\n\nWyliczony dla niej wielomian:\n\n{best_subsequence_polynomial}")
+if __name__ == '__main__':
+    print(f"Najlepiej estymująca grupa węzłów : \n\n{best_subsequence}\n\nWyliczony dla niej wielomian:\n\n{best_subsequence_polynomial}")
