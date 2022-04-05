@@ -19,18 +19,17 @@ def return_polynomials(sub_arrays, data):
     return result
 
 
-constant = math.log(22, 2)
-x_y = {2**i: i for i in range(0, 12)}
-keys = [key for key, value in x_y.items()]
-values = [value for key, value in x_y.items()]
-subsequences_x = sub_lists(keys)
-
-array_polynomial = return_polynomials(subsequences_x, x_y)
-polynomials = [i[0] for i in array_polynomial]
-
-best_result = min(array_polynomial,key=lambda x: np.abs(constant - x[0](22)))
-best_subsequence = best_result[1]
-best_subsequence_polynomial = best_result[0]
-
 if __name__ == '__main__':
+    constant = math.log(22, 2)
+    x_y = {2**i: i for i in range(0, 12)}
+    keys = [key for key, value in x_y.items()]
+    values = [value for key, value in x_y.items()]
+    subsequences_x = sub_lists(keys)
+
+    array_polynomial = return_polynomials(subsequences_x, x_y)
+    polynomials = [i[0] for i in array_polynomial]
+
+    best_result = min(array_polynomial,key=lambda x: np.abs(constant - x[0](22)))
+    best_subsequence = best_result[1]
+    best_subsequence_polynomial = best_result[0]
     print(f"Najlepiej estymująca grupa węzłów : \n\n{best_subsequence}\n\nWyliczony dla niej wielomian:\n\n{best_subsequence_polynomial}")
