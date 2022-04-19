@@ -26,6 +26,9 @@ class Estimation:
         self.polynomial = polynomial
         self.estimated_value = Float(polynomial.subs(Symbol('x'),input_value),6)
 
+    def calculate_value(self,input_value):
+        return Float(self.polynomial.subs(Symbol('x'),input_value),6)
+
 
 class Lagrange:
 
@@ -64,9 +67,6 @@ class Lagrange:
         for i in range(0,len(nodes)):
             result += self.table[nodes[i]] * self.create_lx(nodes, i)
         return Estimation(nodes, simplify(result, ratio=1), None)
-
-    def substitute_for_x(self,polynomial,input_value):
-        return Float(polynomial.subs(Symbol('x'),input_value),6)
 
     def best_estimation(self,input_value,value):
         """
