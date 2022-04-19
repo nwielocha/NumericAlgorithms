@@ -24,7 +24,10 @@ class Estimation:
         """
         self.nodes = nodes
         self.polynomial = polynomial
-        self.estimated_value = Float(polynomial.subs(Symbol('x'),input_value),6)
+        if input_value:
+            self.estimated_value = Float(polynomial.subs(Symbol('x'),input_value),6)
+        else:
+            self.estimated_value = None
 
     def calculate_value(self,input_value):
         return Float(self.polynomial.subs(Symbol('x'),input_value),6)
@@ -115,3 +118,5 @@ class Lagrange:
 
 if __name__ == '__main__':
     lagrange = Lagrange({2 ** i:i for i in range(0, 12)})
+    wielomian = lagrange.create_empty_estimation([8,16,32])
+    wartosc = wielomian.calculate_value(22)
