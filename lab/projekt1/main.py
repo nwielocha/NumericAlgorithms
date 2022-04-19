@@ -51,7 +51,7 @@ class Lagrange:
                 lx_coeff = lx_coeff * ((x - nodes[k]) / (nodes[i] - nodes[k]))
         return lx_coeff
 
-    def create_polynomial_given_nodes(self, nodes):
+    def create_empty_estimation(self, nodes):
         """
         Create polynomial out of given nodes
         Nodes must be contained in object's table property
@@ -63,7 +63,7 @@ class Lagrange:
         result = 0
         for i in range(0,len(nodes)):
             result += self.table[nodes[i]] * self.create_lx(nodes, i)
-        return simplify(result,ratio=1)
+        return Estimation(nodes, simplify(result, ratio=1), None)
 
     def substitute_for_x(self,polynomial,input_value):
         return Float(polynomial.subs(Symbol('x'),input_value),6)
@@ -78,7 +78,7 @@ class Lagrange:
         results = []
         for sublist in self.subtables:
             if len(sublist) > 1:
-                polynomial = self.create_polynomial_given_nodes(sublist)
+                polynomial = self.create_empty_estimation(sublist).polynomial
                 results.append(Estimation(sorted(sublist), polynomial, input_value))
         best_result = min(results, key=lambda x: np.abs(value - x.estimated_value))
         return best_result
@@ -93,7 +93,7 @@ class Lagrange:
         results = []
         for sublist in self.subtables:
             if len(sublist) > 1:
-                polynomial = self.create_polynomial_given_nodes(sublist)
+                polynomial = self.create_empty_estimation(sublist).polynomial
                 results.append(Estimation(sorted(sublist), polynomial, input_value))
         best_result = max(results, key=lambda x: np.abs(value - x.estimated_value))
         return best_result
@@ -104,7 +104,7 @@ class Lagrange:
         :param input_value: Input to calculate polynomial value
         :return: Estimation object
         """
-        polynomial = self.create_polynomial_given_nodes(list(self.table.keys()))
+        polynomial = self.create_empty_estimation(list(self.table.keys())).polynomial
         return Estimation(list(self.table.keys()),polynomial, input_value)
 
     def calculate_logarithm(self, base, value):
