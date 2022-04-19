@@ -1,9 +1,7 @@
-import scipy.interpolate as ip
 import numpy as np
-from numpy.polynomial.polynomial import Polynomial
 import math
 from itertools import compress, product, combinations
-from sympy import Symbol
+from sympy import *
 
 
 def sub_lists(a):
@@ -14,49 +12,103 @@ def sub_lists(a):
         cs += [c, c + [a[0]]]
     return cs
 
+class Estimation:
 
-def create_lx(tabelka, i):
-    n = len(tabelka)
-    wielomian = 1
-    x = Symbol('x')
-    for k in range(0, n):
-        if i != k:
-            wielomian = wielomian * (
-                        (x - tabelka[k][0]) / (tabelka[i][0] - tabelka[k][0]))
-    return wielomian
-
-
-def create_polynomial(tabelka):
-    result = 0
-    for i in range(0, len(tabelka)):
-        result += tabelka[i][1] * create_lx(tabelka, i)
-    return result
+    def __init__(self, nodes,  polynomial, input_value):
+        """
+        Class which represents single composition of nodes, polynomial based on them and
+        value calculated with substituting x with some arbitrary number
+        :param nodes: List of nodes in a x - fx table
+        :param polynomial: Polynomial interpolated with given nodes
+        :param input_value: Value gained by using arbitrary number in polynomial
+        """
+        self.nodes = nodes
+        self.polynomial = polynomial
+        self.estimated_value = Float(polynomial.subs(Symbol('x'),input_value))
 
 
-# def return_polynomials(sub_arrays, data):
-#     result = []
-#     for array in sub_arrays:
-#         result.append([ip.lagrange(array, [data[key] for key in array]),array])
-#     return result
+class Lagrange:
 
+    def __init__(self,table: dict):
+        """
+        Class made to provide data for GUI of application which implements LaGrange interpolation algorithm
+        :param table: x - fx table  in dictionary form where keys are nodes and values are corresponding f(node) values
+        """
+        self.table = table
+        self.subtables = sub_lists(list(table.keys()))
+
+    def create_lx(self,nodes: list, i):
+        """
+        Creates lx coefficient used in lagrange formula
+        :param nodes: list of nodes used to calculate lx
+        :param i: number of iteration from parent-function create_polynomial
+        :return: returns calculated polynomial in form of sympy object
+        """
+        lx_coeff = 1
+        x = Symbol('x')
+        for k in range(0, len(nodes)):
+            if i != k:
+                lx_coeff = lx_coeff * ((x - nodes[k]) / (nodes[i] - nodes[k]))
+        return lx_coeff
+
+    def create_polynomial_given_nodes(self, nodes):
+        """
+        Create polynomial out of given nodes
+        Nodes must be contained in object's table property
+        :param nodes: Nodes out of which polynomial is interpolated
+        :return: interpolated polynomial
+        """
+        if set(nodes) - set(self.table.keys()):
+            raise Exception('Wrong nodes input')
+        result = 0
+        for i in range(0,len(nodes)):
+            result += self.table[nodes[i]] * self.create_lx(nodes, i)
+        return result
+
+    def best_estimation(self,input_value,value):
+        """
+        Creates Estimation object with best possible result
+        :param input_value: Input to calculate polynomial value
+        :param value: Value to compare with polynomial(input_value)
+        :return: Estimation object containing polynomial / nodes which interpolated polynomial / value of polynomial(input)
+        """
+        results = []
+        for sublist in self.subtables:
+            if len(sublist) > 1:
+                polynomial = self.create_polynomial_given_nodes(sublist)
+                results.append(Estimation(sorted(sublist), polynomial, input_value))
+        best_result = min(results, key=lambda x: np.abs(value - x.estimated_value))
+        return best_result
+
+    def worst_estimation(self, input_value, value):
+        """
+        Creates Estimation object with worst possible result
+        :param input_value: Input to calculate polynomial value
+        :param value: Value to compare with polynomial(input_value)
+        :return: Estimation object containing polynomial / nodes which interpolated polynomial / value of polynomial(input)
+        """
+        results = []
+        for sublist in self.subtables:
+            if len(sublist) > 1:
+                polynomial = self.create_polynomial_given_nodes(sublist)
+                results.append(Estimation(sorted(sublist), polynomial, input_value))
+        best_result = max(results, key=lambda x: np.abs(value - x.estimated_value))
+        return best_result
+
+    def estimation_by_value(self,input_value):
+        """
+        Estimates value of polynomial interpolated with usage of whole object's table with given input
+        :param input_value: Input to calculate polynomial value
+        :return: Estimation object
+        """
+        polynomial = self.create_polynomial_given_nodes(list(self.table.keys()))
+        return Estimation(list(self.table.keys()),polynomial, input_value)
+
+    def calculate_logarithm(self, base, value):
+        """
+        Calculates logarithm with given base,value with usage of math lib
+        """
+        return math.log(value, base)
 
 if __name__ == '__main__':
-    constant = math.log(22, 2)
-
-    tabelka = [(2 ** i, i) for i in range(0, 12)]
-    all_index_subsequences = sub_lists([x for x in range(0, 12)])
-    polynomial = create_polynomial(tabelka[3:7])
-    print(polynomial)
-    print(polynomial.subs(Symbol('x'), 22))
-
-    # keys = [key for key, value in x_y.items()]
-    # values = [value for key, value in x_y.items()]
-    # subsequences_x = sub_lists(keys)
-    # array_polynomial = return_polynomials(subsequences_x, x_y)
-    # polynomials = [i[0] for i in array_polynomial]
-
-    # best_result = min(array_polynomial,key=lambda x: np.abs(constant - x[0](22)))
-    # best_subsequence = best_result[1]
-    # best_subsequence_polynomial = best_result[0]
-    # print(f"Najlepiej estymująca grupa węzłów : \n\n{best_subsequence}\n\nWyliczony dla niej wielomian:\n\n{best_subsequence_polynomial}\n\n"
-    #       f"Log22 = {constant} \nF(22) dla obliczonego wielomianu:{best_subsequence_polynomial(22)}")
+    lagrange = Lagrange({2 ** i:i for i in range(0, 12)})
