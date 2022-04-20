@@ -84,7 +84,6 @@ class Lagrange:
             if len(sublist) > 1:
                 polynomial = self.create_polynomial(sublist)
                 results.append((sorted(sublist), polynomial, input_value))
-            print(len(results))
         best_result = min(results, key=lambda x: np.abs(value - Float(x[1].subs(Symbol('x'), input_value), 6)))
         return Estimation(best_result[0],best_result[1], input_value)
 
@@ -98,9 +97,9 @@ class Lagrange:
         results = []
         for sublist in self.subtables:
             if len(sublist) > 1:
-                polynomial = self.create_empty_estimation(sublist).polynomial
-                results.append(Estimation(sorted(sublist), polynomial, input_value))
-        best_result = max(results, key=lambda x: np.abs(value - x.estimated_value))
+                polynomial = self.create_polynomial()
+                results.append((sorted(sublist), polynomial, input_value))
+        best_result = max(results, key=lambda x: np.abs(value - Float(x[1].subs(Symbol('x'), input_value), 6)))
         return best_result
 
     def estimation_by_value(self,input_value):
@@ -109,7 +108,7 @@ class Lagrange:
         :param input_value: Input to calculate polynomial value
         :return: Estimation object
         """
-        polynomial = self.create_empty_estimation(list(self.table.keys())).polynomial
+        polynomial = self.create_polynomial(list(self.table.keys()))
         return Estimation(list(self.table.keys()),polynomial, input_value)
 
     def calculate_logarithm(self, base, value):
