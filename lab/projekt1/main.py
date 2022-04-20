@@ -2,6 +2,7 @@ import numpy as np
 import math
 from itertools import compress, product, combinations
 from sympy import *
+from sympy.plotting import plot as symplot
 
 
 def sub_lists(a):
@@ -57,7 +58,7 @@ class Lagrange:
                 lx_coeff = lx_coeff * ((x - nodes[k]) / (nodes[i] - nodes[k]))
         return lx_coeff
 
-    def create_empty_estimation(self, nodes):
+    def create_polynomial(self, nodes):
         """
         Create polynomial out of given nodes
         Nodes must be contained in object's table property
@@ -69,7 +70,7 @@ class Lagrange:
         result = 0
         for i in range(0,len(nodes)):
             result += self.table[nodes[i]] * self.create_lx(nodes, i)
-        return Estimation(nodes, simplify(result, ratio=1), None)
+        return result
 
     def best_estimation(self,input_value,value):
         """
@@ -81,10 +82,11 @@ class Lagrange:
         results = []
         for sublist in self.subtables:
             if len(sublist) > 1:
-                polynomial = self.create_empty_estimation(sublist).polynomial
-                results.append(Estimation(sorted(sublist), polynomial, input_value))
-        best_result = min(results, key=lambda x: np.abs(value - x.estimated_value))
-        return best_result
+                polynomial = self.create_polynomial(sublist)
+                results.append((sorted(sublist), polynomial, input_value))
+            print(len(results))
+        best_result = min(results, key=lambda x: np.abs(value - Float(x[1].subs(Symbol('x'), input_value), 6)))
+        return Estimation(best_result[0],best_result[1], input_value)
 
     def worst_estimation(self, input_value, value):
         """
@@ -118,5 +120,5 @@ class Lagrange:
 
 if __name__ == '__main__':
     lagrange = Lagrange({2 ** i:i for i in range(0, 12)})
-    wielomian = lagrange.create_empty_estimation([8,16,32])
-    wartosc = wielomian.calculate_value(22)
+    #wielomian = lagrange.create_empty_estimation([2,4,8])
+    x = lagrange.best_estimation(22,math.log(22,2))
