@@ -24,7 +24,7 @@ class Estimation:
         :param input_value: Value gained by using arbitrary number in polynomial
         """
         self.nodes = nodes
-        self.polynomial = polynomial
+        self.polynomial = simplify(polynomial,ratio=1)
         if input_value:
             self.estimated_value = Float(polynomial.subs(Symbol('x'),input_value),6)
         else:
@@ -100,7 +100,7 @@ class Lagrange:
                 polynomial = self.create_polynomial()
                 results.append((sorted(sublist), polynomial, input_value))
         best_result = max(results, key=lambda x: np.abs(value - Float(x[1].subs(Symbol('x'), input_value), 6)))
-        return best_result
+        return Estimation(best_result[0],best_result[1], input_value)
 
     def estimation_by_value(self,input_value):
         """
@@ -121,3 +121,4 @@ if __name__ == '__main__':
     lagrange = Lagrange({2 ** i:i for i in range(0, 12)})
     #wielomian = lagrange.create_empty_estimation([2,4,8])
     x = lagrange.best_estimation(22,math.log(22,2))
+    print(x.estimated_value)
