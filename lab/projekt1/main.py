@@ -119,6 +119,7 @@ class Lagrange:
 
 if __name__ == '__main__':
     lagrange = Lagrange({2 ** i:i for i in range(0, 12)})
-    #wielomian = lagrange.create_empty_estimation([2,4,8])
-    x = lagrange.best_estimation(22,math.log(22,2))
-    print(x.estimated_value)
+    #x = lagrange.best_estimation(22,math.log(22,2))
+    x = lagrange.create_polynomial(list(lagrange.table.keys()))
+    est = Estimation(list(lagrange.table.keys()),x,22)
+    plot(x)
