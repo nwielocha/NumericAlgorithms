@@ -8,7 +8,7 @@ sg.theme('Reddit')   # Uzywany motyw
 
 layout = [  [sg.Text('Program pozwalający na obliczenie logarytmu  za pomocą wielomianów interpolujących funkcję z tabeli podanej poniżej:')],
             [sg.Image(r'C:\Users\Rfrev\alg\wykres.png')],
-            [sg.Text('Podaj liczbę której wartość chcesz obliczyć dla wielomianu lagaranga powstałego na podstawie wyżej pokazanej tabeli.')],
+            [sg.Text('Podaj liczbę której wartość chcesz obliczyć dla wielomianu Lagrange powstałego na podstawie wyżej pokazanej tabeli.')],
             [sg.Text('Liczby z przedziału 1-2048'),sg.Input(key='key1'),sg.Button('Oblicz'),],
             [sg.Text('Za pomocą tego programu możesz również sprawdzić eksperymentalnie jaki podzbiór danych z tabelki daje najlepsze \nprzybliżenie dokładnej wartości logarytmu o podstawie 2 z wartosci podanej wyzej. Zaznacz pola wartości X które chcesz \n uwzględnić w swoim eksperymentalnym wyliczeniu:')],
             [sg.Checkbox('1', default=False,key='1'), sg.Checkbox('2', default=False,key='2'),sg.Checkbox('4', default=False,key='4'),sg.Checkbox('8', default=False,key='8'),sg.Checkbox('16', default=False,key='16'),sg.Checkbox('32', default=False,key='32'),sg.Checkbox('64', default=False,key='64'),sg.Checkbox('128', default=False,key='128'),sg.Checkbox('256', default=False,key='256'),sg.Checkbox('512', default=False,key='512'),sg.Checkbox('1024', default=False,key='1024'),sg.Checkbox('2048', default=False,key='2048')],
