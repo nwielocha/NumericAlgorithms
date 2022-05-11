@@ -8,14 +8,13 @@ class NewtonMethod:
         self.equation_2 = equation2
         self.point = Point(x_point, y_point)
 
-    def calculate_derivative(self,equation,x:Symbol):
-        return equation.diff(x)
 
     def create_derivative_matrix(self):
-        return Matrix([[self.calculate_derivative(self.equation_1,Symbol('x')),
-                       self.calculate_derivative(self.equation_1,Symbol('y'))],
-                      [self.calculate_derivative(self.equation_2,Symbol('x')),
-                       self.calculate_derivative(self.equation_2,Symbol('y'))]])
+        self.matrix = Matrix([[self.equation_1.diff(Symbol('x')),
+                       self.equation_1.diff(Symbol('y'))],
+                      [self.equation_2.diff(Symbol('x')),
+                       self.equation_2.diff(Symbol('y'))]])
+        return self.matrix
 
     def sub_variables_for_values(self):
         pass
