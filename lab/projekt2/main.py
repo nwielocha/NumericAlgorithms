@@ -23,10 +23,11 @@ class NewtonMethod:
     def sub_variables_for_values(self):
         pass
 
-    def core_calculation(self,point: Point,equation):
+    def core_calculation(self,point: Point):
         first_component = Matrix([[point.x],[point.y]])
         second_component = self.create_derivative_matrix()
-        third_component = Matrix([[equation.subs(Symbol('x'),5).subs(Symbol('y'),5)],[equation.subs(Symbol('x'),5).subs(Symbol('y'),5)]])
+        third_component = Matrix([[self.equation_1.subs(Symbol('x'),point.x).subs(Symbol('y'),point.y)],
+                                  [self.equation_2.subs(Symbol('x'),point.x).subs(Symbol('y'),point.y)]])
         return first_component - second_component * third_component
 
 
