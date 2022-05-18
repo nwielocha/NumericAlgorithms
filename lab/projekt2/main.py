@@ -8,8 +8,12 @@ class NewtonMethod:
         self.equation_2 = equation2
         self.point = Point(x_point, y_point)
 
-
     def create_derivative_matrix(self):
+        """
+        Creates matrix out of two equations passed through constructor.
+        Matrix contains two derivatives of each passed equation - calculated by x and y variable
+        :return: Matrix of passed equations derivatives
+        """
         self.matrix = Matrix([[self.equation_1.diff(Symbol('x')),
                        self.equation_1.diff(Symbol('y'))],
                       [self.equation_2.diff(Symbol('x')),
@@ -20,10 +24,11 @@ class NewtonMethod:
         pass
 
     def core_calculation(self,point: Point,equation):
-        first_component = Matrix([point.x,point.y])
+        first_component = Matrix([[point.x],[point.y]])
         second_component = self.create_derivative_matrix()
-        third_component = equation.subs(Symbol('x'),5).subs(Symbol('y'),5)
+        third_component = Matrix([[equation.subs(Symbol('x'),5).subs(Symbol('y'),5)],[equation.subs(Symbol('x'),5).subs(Symbol('y'),5)]])
         return first_component - second_component * third_component
+
 
 if __name__ == '__main__':
     x,y = Symbol('x y')
